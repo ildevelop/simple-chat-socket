@@ -5,8 +5,19 @@ var io = require('socket.io')(server);
 var path = require('path');
 var port =8080;
 
-app.get('/',function(req,res){
-  res.sendFile(path.join(__dirname,'index.html'))
+  app.get('/',function(req,res){
+  res.sendFile(path.join(__dirname,'auth.html'))
+});
+app.get('/:id',function(req,res){
+  if(req.params.id == 'client.js')
+    res.sendFile(path.join(__dirname,'client.js'))
+  else if (req.params.id == 'favicon.ico')
+    res.sendStatus(404)
+  else {
+    users.push(req.params.id);
+    res.sendFile(path.join(__dirname,'index.html'))
+  }
+
 });
 
 app.get('/client.js',function(req,res){
@@ -18,6 +29,8 @@ server.listen(port,function () {
   console.log("app runing on port:", port);
 });
 var connections = [];
+var users = [];
+var mesages =[];
 var namespace = io.of('/room1');
 
 namespace.on('connection', function (socket) {
@@ -45,9 +58,15 @@ namespace.on('connection', function (socket) {
       })
     }
   });
-  socket.on('disconnect',function (data) {
-    connections.splice(connections.indexOf(socket),1)
-    console.log("Disconected ", connections.length);
+  socket.on('disconnect',function () {
+    connections.splice(connections.indexOf(socket),1);
+    users.splice(connections.indexOf(socket),1);
+    namespace.emit('users loaded',{users:users});
+    console.log("Disconected:", connections.length, users);
   })
+  socket.on('load users', function () {
+    namespace.emit('users loaded', {users:users})
+  })
+  socket.emit('new user', {name: users[users.length -1]})
 
 });

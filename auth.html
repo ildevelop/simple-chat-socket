@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>socketChat</title>
+    <link rel="stylesheet" type="text/html" href="./style.css">.
+    <script>
+        window.onload = function () {
+          var btn  = document.getElementsByTagName('button')[0];
+          var inp  = document.getElementById('username');
+
+          btn.onclick = function () {
+            console.log('inp:',inp.value);
+            if (inp.value == ''){
+              alert('Invalid username try again ...')
+              return
+            }
+            window.location.href= '/'+ inp.value;
+          }
+        }
+    </script>
+</head>
+<body>
+<ul class="pages">
+    <li class="login page">
+        <div class="form">
+            <h3 class="title">What's your nickname?</h3>
+            <input class="usernameInput" id="username" type="text" maxlength="14" />
+            <button> connect >>></button>
+        </div>
+    </li>
+</ul>
+</body>
+</html>
